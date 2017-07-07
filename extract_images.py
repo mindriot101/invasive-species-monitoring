@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from keras.preprocessing import image
 import numpy as np
+from scipy.misc import imread, imresize
 import glob
 from tqdm import tqdm
 import os
@@ -26,8 +26,11 @@ def condense(dirname, out_filename):
 
     with tqdm(total=nfiles) as pbar:
         for (i, filename) in enumerate(files):
-            img = image.load_img(filename, target_size=(TARGET_WIDTH, TARGET_HEIGHT))
-            out[i] = image.img_to_array(img)
+            arr = imread(filename)
+            arr = imresize(arr, size=(TARGET_WIDTH, TARGET_HEIGHT))
+            arr = arr.astype('float32')
+            arr = arr / 255.
+            out[i] = arr
             pbar.update(1)
 
     np.save(out_filename, out)
