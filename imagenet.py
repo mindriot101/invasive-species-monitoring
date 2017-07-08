@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 from scipy.misc import imread, imresize
 from keras.preprocessing import image
+import h5py
 
 
 # In[ ]:
@@ -94,10 +95,11 @@ train_datagen.fit(X_train)
 # In[ ]:
 
 
-# model.fit_generator(
-#     train_datagen.flow(X_train, y_train, batch_size=32),
-#     steps_per_epoch=X_train.shape[0] // 32,
-#     epochs=1,
-#     validation_data=(X_test, y_test)
-# )
+model.fit_generator(
+    train_datagen.flow(X_train, y_train, batch_size=32),
+    steps_per_epoch=X_train.shape[0] // 32,
+    epochs=1,
+    validation_data=(X_test, y_test)
+)
 
+model.save('trained_model.h5')
