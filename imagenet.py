@@ -5,22 +5,24 @@
 
 
 from keras.applications.vgg16 import VGG16
-from keras.models import Model
 from keras.layers import *
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
 import pandas as pd
 import numpy as np
-from scipy.misc import imread, imresize
-from keras.preprocessing import image
 import h5py
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('imagenet')
+
+N_EPOCHS = 20
 
 # In[ ]:
 
 
+logger.info('Reading labels')
 train_labels = pd.read_csv('train_labels.csv')
 train_labels.head()
 
@@ -35,6 +37,7 @@ y = train_labels.invasive.values
 # In[ ]:
 
 
+logger.info('Loading features')
 X = np.load('train.npy')
 
 
@@ -56,8 +59,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y)
 # In[ ]:
 
 
+logger.info('Setting up model')
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-base_model.summary()
 
 
 # In[ ]:
@@ -84,6 +87,7 @@ model.summary()
 # In[ ]:
 
 
+logger.info('Building image data generator')
 train_datagen = ImageDataGenerator(
     rotation_range=30,
     width_shift_range=0.1,
@@ -95,11 +99,13 @@ train_datagen.fit(X_train)
 # In[ ]:
 
 
+logger.info('Fitting model')
 model.fit_generator(
     train_datagen.flow(X_train, y_train, batch_size=32),
     steps_per_epoch=X_train.shape[0] // 32,
-    epochs=1,
+    epochs=N_EPOCHS,
     validation_data=(X_test, y_test)
 )
 
+logger.info('Saving model')
 model.save('trained_model.h5')
