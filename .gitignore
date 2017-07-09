@@ -3,3 +3,5 @@ data
 *.h5
 *.npy
 train_labels.csv
+.python-version
+venv
