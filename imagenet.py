@@ -19,7 +19,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('imagenet')
 
-N_EPOCHS = 20
+N_EPOCHS = 50
 
 # In[ ]:
 
