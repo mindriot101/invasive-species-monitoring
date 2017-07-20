@@ -7,6 +7,7 @@
 from keras.applications.vgg16 import VGG16
 from keras.layers import *
 from keras.models import Sequential, Model
+from keras.callbacks import ModelCheckpoint
 from keras import optimizers
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
@@ -103,8 +104,7 @@ model.fit_generator(
     train_datagen.flow(X_train, y_train, batch_size=32),
     steps_per_epoch=X_train.shape[0] // 32,
     epochs=N_EPOCHS,
-    validation_data=(X_test, y_test)
+    validation_data=(X_test, y_test),
+    callbacks=[ModelCheckpoint('VGG16-transferlearning.model', monitor='val_acc',
+        save_best_only=True)],
 )
-
-logger.info('Saving model')
-model.save('trained_model.h5')
