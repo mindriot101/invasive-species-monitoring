@@ -7,6 +7,7 @@
 from keras.applications.vgg16 import VGG16
 from keras.layers import *
 from keras.models import Sequential, Model
+from keras import optimizers
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -72,7 +73,8 @@ add_model.add(Dense(256, activation='relu'))
 add_model.add(Dense(1, activation='sigmoid'))
 
 model = Model(inputs=base_model.input, outputs=add_model(base_model.output))
-model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer=optimizers.SGD(lr=1E-4, momentum=0.9),
+        metrics=['accuracy'])
 
 
 # In[ ]:
